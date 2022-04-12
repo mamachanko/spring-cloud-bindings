@@ -269,6 +269,8 @@ Disable Property: `org.springframework.cloud.bindings.boot.eureka.enable`
 Type: `oauth2`
 Disable Property: `org.springframework.cloud.bindings.boot.oauth2.enable`
 
+**TODO**
+
 | Property | Value
 | -------- | ------------------
 | `spring.security.oauth2.client.registration.{name}.client-id` | `{client-id}`

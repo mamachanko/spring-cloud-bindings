@@ -66,6 +66,15 @@ final class SpringSecurityOAuth2BindingsPropertiesProcessorTest {
                             .withEntry("jwk-set-uri", "my-provider-jwk-set-uri")
                             .withEntry("user-name-attribute", "my-provider-user-name-attribute")
             ),
+            new Binding("test-name-4", Paths.get("test-path"),
+                    new FluentMap()
+                            .withEntry(Binding.TYPE, TYPE)
+                            .withEntry("provider", "my-provider-2")
+                            .withEntry("client-id", "my-provider-client-id")
+                            .withEntry("client-secret", "my-provider-client-secret")
+                            .withEntry("authorization-grant-type", "my-provider-authorization-grant-type-1, my-provider-authorization-grant-type-2")
+                            .withEntry("issuer-uri", "my-issuer-uri-2")
+            ),
             // Don't crash when provider is missing
             new Binding("test-missing-provider", Paths.get("test-path"),
                     new FluentMap()
@@ -109,17 +118,30 @@ final class SpringSecurityOAuth2BindingsPropertiesProcessorTest {
                 .containsEntry("spring.security.oauth2.client.registration.test-name-3.provider", "my-provider")
                 .containsEntry("spring.security.oauth2.client.registration.test-name-3.client-id", "my-provider-client-id")
                 .containsEntry("spring.security.oauth2.client.registration.test-name-3.client-secret", "my-provider-client-secret")
-                .containsEntry("spring.security.oauth2.client.registration.test-name-3.client-authentication-method", "my-provider-client-authentication-method")
                 .containsEntry("spring.security.oauth2.client.registration.test-name-3.authorization-grant-type", "my-provider-authorization-grant-type")
-                .containsEntry("spring.security.oauth2.client.registration.test-name-3.redirect-uri", "my-provider-redirect-uri")
-                .containsEntry("spring.security.oauth2.client.registration.test-name-3.scope", "my-provider-scope1,my-provider-scope2")
-                .containsEntry("spring.security.oauth2.client.registration.test-name-3.client-name", "my-provider-client-name")
                 .containsEntry("spring.security.oauth2.client.provider.my-provider.authorization-uri", "my-provider-authorization-uri")
                 .containsEntry("spring.security.oauth2.client.provider.my-provider.token-uri", "my-provider-token-uri")
                 .containsEntry("spring.security.oauth2.client.provider.my-provider.user-info-uri", "my-provider-user-info-uri")
                 .containsEntry("spring.security.oauth2.client.provider.my-provider.user-info-authentication-method", "my-provider-user-info-authentication-method")
                 .containsEntry("spring.security.oauth2.client.provider.my-provider.jwk-set-uri", "my-provider-jwk-set-uri")
                 .containsEntry("spring.security.oauth2.client.provider.my-provider.user-name-attribute", "my-provider-user-name-attribute")
+        ;
+    }
+
+    @Test
+    @DisplayName("registers a client per authorization grant type")
+    void testMultipleAuthorizationGrantTypes() {
+        new SpringSecurityOAuth2BindingsPropertiesProcessor().process(environment, bindings, properties);
+        assertThat(properties)
+                .containsEntry("spring.security.oauth2.client.registration.test-name-4-my-provider-authorization-grant-type-1.provider", "my-provider-2")
+                .containsEntry("spring.security.oauth2.client.registration.test-name-4-my-provider-authorization-grant-type-1.client-id", "my-provider-client-id")
+                .containsEntry("spring.security.oauth2.client.registration.test-name-4-my-provider-authorization-grant-type-1.client-secret", "my-provider-client-secret")
+                .containsEntry("spring.security.oauth2.client.registration.test-name-4-my-provider-authorization-grant-type-1.authorization-grant-type", "my-provider-authorization-grant-type-1")
+                .containsEntry("spring.security.oauth2.client.registration.test-name-4-my-provider-authorization-grant-type-2.provider", "my-provider-2")
+                .containsEntry("spring.security.oauth2.client.registration.test-name-4-my-provider-authorization-grant-type-2.client-id", "my-provider-client-id")
+                .containsEntry("spring.security.oauth2.client.registration.test-name-4-my-provider-authorization-grant-type-2.client-secret", "my-provider-client-secret")
+                .containsEntry("spring.security.oauth2.client.registration.test-name-4-my-provider-authorization-grant-type-2.authorization-grant-type", "my-provider-authorization-grant-type-2")
+                .containsEntry("spring.security.oauth2.client.provider.my-provider-2.issuer-uri", "my-issuer-uri-2")
         ;
     }
 
